@@ -1,0 +1,121 @@
+#Top K most frequent items in an array
+
+from typing import List
+#Problem 347
+#ex nums = [1,1,1,2,2,3], k = 2
+
+#nlogn solution
+
+class Solution:
+    def topKFrequent(self, nums: List[int], k: int) -> List[int]:
+        #step 1: create dictionary; 
+        d1 = dict()
+        #iterate through nums, create new key for each value without key
+        #O(n) - 2n
+        for n in nums:
+            if n in d1:
+                d1[n] +=1#increment value each time duplicate value encountered - O(1) each time 
+            else:
+                d1[n] = 1 #otherwise set default value to 1
+        #Step 3 sort the dictionary by value in reverse order  #{1:3,2:2,1:1}
+        #nlogn (assuming quiksort or mergesort)
+        d1 = dict(sorted(d1.items(),reverse=True, key=lambda item: item[1]))
+        #return first k values in dict, based on sorted list. 
+        #2n+ nlogn + k
+        #O(nlogn)
+        print(d1.items())
+        k_results = list()
+        for K,v in d1.items():
+            k_results.append(K) 
+        return k_results[0:k]
+        
+#O(n) solution using max heap     
+        
+from typing import List
+#Problem 347
+#ex nums = [1,1,1,2,2,3], k = 2
+#heapsort solution
+import heapq as hq
+class Solution:
+    def topKFrequent(self, nums: List[int], k: int) -> List[int]:
+        #step 1: create dictionary; 
+        d1 = dict()
+        #iterate through nums, create new key for each value without key
+        #O(n) - 2n
+        for n in nums:
+            if n in d1:
+                d1[n] +=1#increment value each time duplicate value encountered - O(1) each time 
+            else:
+                d1[n] = 1 #otherwise set default value to 1
+        #Step 3 sort the dictionary by value in reverse order  #{1:3,2:2,1:1}
+        #print(d1)
+      
+
+        # heapq function returns k largest from max heap of values
+        #run time: heapify O(n); k*O(1) to pop values from max heap; total = n + k
+        values = hq.nlargest(k,list(d1.values()),key=None) 
+
+        #add results to keys
+        results = []
+        #loop through dictionary, if the value matches one of the the 'values', then add the key to the list
+        #efficent for small k
+        #run time = O(k*1/2n)
+        for K,v in d1.items():
+            if (v in values):
+                results.append(K)
+        #return first k values in dict,from heap
+        #n+ n + n + k
+        #O(n)
+    
+        return results
+ 
+#k * n solution using bubble sort
+ from typing import List
+#Problem 347
+#ex nums = [1,1,1,2,2,3], k = 2
+#k x n bubble sort implementation.  Should be good for small value of k
+
+class Solution:
+    def topKFrequent(self, nums: List[int], k: int) -> List[int]:
+        #step 1: create dictionary; 
+        d1 = dict()
+        #iterate through nums, create new key for each value without key
+        #O(n) - 2n
+        for n in nums:
+            if n in d1:
+                d1[n] +=1#increment value each time duplicate value encountered - O(1) each time 
+            else:
+                d1[n] = 1 #otherwise set default value to 1
+        #Step create a list from the items in the dictionary -an array of tuples (key,value)
+      
+        li = list(d1.items())
+        
+        #print(li)
+      
+        bubbleSort_tuples(li,k) # bubble sorts list k times
+        results = li[-k:]
+        print(results)
+        k_values = []
+        for K,v in results[::-1]: # iterate backwards through k sorted elements in array and append value in tuple
+            k_values.append(K)
+        #print(results)
+        #results
+        return k_values
+    
+def bubbleSort_tuples(arr,k):#does bubble sort on array of tuples(2 value tuple only). Sorts by value least to greatest
+    
+    n = len(arr)
+ 
+    # Traverse through all array elements
+    for i in range(k):
+    # range(n) also work but outer loop will repeat one time more than needed.
+ 
+        # Last i elements are already in place
+        for j in range(0, n-i-1):
+            #print(arr[j][1])
+            # traverse the array from 0 to n-i-1
+            # Swap if the element found is greater
+            # than the next element
+            if arr[j][1] > arr[j + 1][1] :
+                arr[j], arr[j + 1] = arr[j + 1], arr[j]
+ 
