@@ -1,0 +1,108 @@
+#https://leetcode.com/problems/add-two-numbers/
+#first solution
+#converts linked lists to strings of numbers, adds them together then back to linked list. 
+from typing import Optional
+class Solution:
+    
+    def addTwoNumbers(self, l1: Optional[ListNode], l2: Optional[ListNode]) -> Optional[ListNode]:
+        l1 = self.reverse(l1) # reverse the two linked lists
+        l2 = self.reverse(l2)
+        a, b=int(self.l_to_string(l1)), int(self.l_to_string(l2)) #convert the reversed lists to a string, cast as int
+        addend = str(a+b) # add the integers
+        return self.string_to_l(addend) # convert the sum into a linked list and return the head of the list
+        
+    def printNodes(self, l1: Optional[ListNode]) -> 'prints the Nodes':
+        if (l1 != None):
+            print(l1.val)
+            self.printNodes(l1.next)
+            
+    def l_to_string(self, l:Optional[ListNode]) -> 'number nodes as string':
+        num = ''
+        if (l==None):
+            return l
+        else:
+            while(l!=None):
+                num +=str(l.val)
+                l=l.next
+        return num
+    
+    
+    def reverse(self, l: Optional[ListNode]) ->Optional[ListNode]: # reverses a linked list
+        prev = None
+        current = l
+        while(current != None):
+            next = current.next
+            current.next = prev
+            prev = current
+            current = next
+        l = prev
+        return l
+        
+        
+    def string_to_l(self, s:str)->Optional[ListNode]: #converts a string to a linked list with each char as a node
+        l = ListNode(int(s[-1]))
+        if (len(s)<=1):
+            return l
+        else:
+            #print(s[0])
+            if (s[-2] !=None):
+                #print(s[1:])
+                l.next = self.string_to_l(s[0:-1])
+        return l
+ #second solution.  Adds numbers one at a time, adds to new linked list, and carries the value if the sum is more than 10
+ 
+ 
+ class Solution:      
+    
+    def addTwoNumbers(self, l1: Optional[ListNode], l2: Optional[ListNode]) -> Optional[ListNode]:
+        nextNode = ListNode(l1.val + l2.val)
+        carry = False
+        head=nextNode
+        prev = None
+        while (nextNode!=None):         
+            if (carry):
+                nextNode.val +=1
+            if (nextNode.val >=10):
+                carry = True 
+                nextNode.val = nextNode.val%10    
+            else:
+                carry = False   
+      
+            if (l1 !=None and l1.next!=None):
+                l1 = l1.next
+                a=l1.val
+            else:
+                l1=None
+                a=0
+            if (l2 !=None and l2.next!=None):
+                l2 = l2.next
+                b=l2.val
+            else:
+                l2=None
+                b=0
+            if (l1 is None and l2 is None):
+                break
+            prev = nextNode # store current node
+            nextNode = ListNode(a+b)
+            prev.next = nextNode    
+            prev = prev.next
+        if (carry is True):
+            prev.next = ListNode(1)
+        return head
+            
+         
+
+    def sumElements(self, l1: Optional[ListNode], l2: Optional[ListNode]) -> Optional[ListNode]:
+        if (l1 is None and l2 is None):
+            return None
+        if (l1 is None):
+            a=0
+        else:
+            a=l1.val
+        if (l2 is None):
+            b=0
+        else:
+            b=l2.val
+        return ListNode(a+b)
+ 
+        
