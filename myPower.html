@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+<title>Exponent Calculator</title>
+<link rel="stylesheet" href="https://bootswatch.com/4/flatly/bootstrap.min.css">
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+
+<script>
+    $(document).ready(function(){
+        $("#calculate").on("click", function(){
+        var a = parseFloat($('#mantissa').val());
+        var b = parseInt($('#exponent').val());
+        var result = myPow(a,b);
+            alert(result);
+            //document.getElementById("txtresult").innerHTML = result;    
+          $("#txtresult").text(result);
+        })
+    })
+        
+   function myPow(x,n){
+    
+     if (n<0){
+        var x=1/x //invert the mantissa in the case of negative exponents
+      }
+    
+    var l = x //store original mantissa value in memory
+    var n = Math.abs(n) //make all exponents positive
+    
+    if (n == 0 || x==1){  //return 1 if exponent or mantissa is 0 
+        return 1
+    }
+    
+    if (x==0){ //return 0 if the mantissa is 0 
+        return 0
+    }
+    
+    
+    if(x==-1){ //return -1 if mantissa is -1 and exponent is odd; 1 if exponent is even
+            if (n%2==1){
+                return -1
+            }
+            else{
+                return 1
+            }
+    }
+    
+    if (n>32){//handle large exponents with greedy algorithm approach in outside function with powers of 2
+        let values = greedy_exp(x,n);
+        var x = values[0]
+        var n = values[1]
+    }
+    
+    for (let i=0; i<n-1; i++){//for loop to multiply accumulating x value to original mantissa
+        x = l*x
+    }
+   return x 
+}
+
+function greedy_exp(x,n){
+    var l=x
+    if (n>33554432){ //calculate x^2^25, if the exponent is greater than 2^25
+        var temp = l
+        for (let i=0; i<25; i++){  
+            temp=(temp*temp).toFixed(15)   //multiply and round to 15 digits  
+        }                
+    }
+    
+    while (n>33554432){ //multiply x by x^2^25, thereby decreasing the exponent (n) by 2^25
+            x=(temp*x).toFixed(15)
+            n-=33554432
+    }
+    
+    if (n>1048576){ //calculate x^2^20, if the exponent is greater than 2^20
+        var temp = l
+        for (let i=0; i<20; i++){  
+            temp=(temp*temp).toFixed(15)   //multiply and round to 15 digits  
+        }                
+    }
+    
+    while (n>1048576){ //multiply x by x^2^20, thereby decreasing the exponent (n) by 2^20
+            x=(temp*x).toFixed(15)
+            n-=1048576
+    }
+    
+    if (n>32768){ //calculate x^2^15, if the exponent is greater than 2^15
+        var temp = l
+        for (let i=0; i<15; i++){  
+            temp=(temp*temp).toFixed(15)   //multiply and round to 15 digits  
+        }                
+    }
+    
+    while (n>32768){ //multiply x by x^2^15, thereby decreasing the exponent (n) by 2^15
+            x=(temp*x).toFixed(15)
+            n-=32768
+    } 
+    
+    if (n>1024){ //calculate x^2^10, if the exponent is greater than 2^10
+        var temp = l
+        for (let i=0; i<10; i++){  
+            temp=(temp*temp).toFixed(15)   //multiply and round to 15 digits  
+        }                
+    }
+    
+    while (n>1024){ //multiply x by x^2^15, thereby decreasing the exponent (n) by 2^15
+            x=(temp*x).toFixed(15)
+            n-=1024
+    }
+    
+    if (n>32){ //calculate x^2^5, if the exponent is greater than 2^5
+        var temp = l
+        for (let i=0; i<5; i++){  
+            temp=(temp*temp).toFixed(15)  //multiply and round to 15 digits     
+        }
+    }
+    
+    while (n>32){ //multiply x by x^2^25, thereby decreasing the exponent (n) by 2^5
+            x=(temp*x).toFixed(15)
+            n-=32
+    }
+              
+    return [x,n]
+    
+}     
+    
+    </script>
+    </head>
+<body>
+<button  type="button"  id = "calculate" class="btn btn-primary btn-lg">Press to Calculate! x^n </button>
+<br>   
+<div class="form-group">
+<label class="col-form-label col-form-label-sm mt-4" for="inputSmall">Enter X</label>
+<br>
+<input type="text" id="mantissa" name="BoxMantissa"> 
+<br>
+<label class="col-form-label col-form-label-sm mt-4" for="inputSmall">Enter N</label>
+<br>
+<input type="text" id="exponent" name="BoxExponent">       
+</div>
+<br>
+
+
+</body>
+
+</html>
